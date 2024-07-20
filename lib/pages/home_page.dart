@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:habit_tracker/components/drawer.dart';
 import 'package:habit_tracker/components/habit_list.dart';
 import 'package:habit_tracker/database/habit_database.dart';
@@ -80,21 +81,32 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        //foregroundColor: Theme.of(context).colorScheme.inversePrimary,
-      ),
-      drawer: const HabitDrawer(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => createHabitDialog(),
-        backgroundColor: Theme.of(context).colorScheme.tertiary,
-        child: Icon(
-          Icons.add,
-          color: Theme.of(context).colorScheme.inversePrimary,
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          //foregroundColor: Theme.of(context).colorScheme.inversePrimary,
         ),
-      ),
-      body: HabitList(),
-    );
+        drawer: const HabitDrawer(),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => createHabitDialog(),
+          backgroundColor: Theme.of(context).colorScheme.tertiary,
+          child: Icon(
+            Icons.add,
+            color: Theme.of(context).colorScheme.inversePrimary,
+          ),
+        ),
+        body: Column(
+          children: [
+            Text(
+              "To Edit or Delete Habit, Slide the Habit Tile to The Left.",
+              style: TextStyle(
+                  color: Theme.of(context).colorScheme.inversePrimary,
+                  fontWeight: FontWeight.bold),
+            ),
+            const Expanded(
+              child: HabitList(),
+            )
+          ],
+        ));
   }
 }
