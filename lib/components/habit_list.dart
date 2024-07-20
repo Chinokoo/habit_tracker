@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:habit_tracker/components/habit_tile.dart';
 import 'package:habit_tracker/database/habit_database.dart';
@@ -30,6 +29,8 @@ class _HabitListState extends State<HabitList> {
       }
     }
 
+//controller for editing the habit name and deleting the habit.
+
     //editing the habit.
     editHabit(Habit habit) {
       TextEditingController _controller =
@@ -37,6 +38,8 @@ class _HabitListState extends State<HabitList> {
       showDialog(
           context: context,
           builder: (context) => AlertDialog(
+                shape: ContinuousRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
                 title: const Text("Edit This Habit"),
                 content: TextField(
                   controller: _controller,
@@ -61,7 +64,48 @@ class _HabitListState extends State<HabitList> {
                       //clear the text field.
                       _controller.clear();
                     },
-                    child: const Text("Save"),
+                    child: const Text(
+                      "Save",
+                      style: TextStyle(color: Colors.blue),
+                    ),
+                  ),
+                ],
+              ));
+    }
+
+    //editing the habit.
+    deleteHabit(Habit habit) {
+      TextEditingController _controller =
+          TextEditingController(text: habit.name);
+      showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+                shape: ContinuousRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                title: const Text("Are You Sure!"),
+                content: Text("Do you want to delete ${habit.name}?"),
+                actions: [
+                  MaterialButton(
+                    onPressed: () {
+                      //pop the dialog.
+                      Navigator.pop(context);
+                      //clear the text field.
+                      _controller.clear();
+                    },
+                    child: const Text("Cancel"),
+                  ),
+                  MaterialButton(
+                    onPressed: () {
+                      context.read<HabitDatabase>().deleteHabit(habit.id);
+                      //pop the dialog.
+                      Navigator.pop(context);
+                      //clear the text field.
+                      _controller.clear();
+                    },
+                    child: const Text(
+                      "delete",
+                      style: TextStyle(color: Colors.red),
+                    ),
                   ),
                 ],
               ));
@@ -82,6 +126,7 @@ class _HabitListState extends State<HabitList> {
           text: habit.name,
           onChanged: (value) => checkHabitOnAndOff(value, habit),
           editHabit: () => editHabit(habit),
+          deleteHabit: () => deleteHabit(habit),
         );
       },
     );
