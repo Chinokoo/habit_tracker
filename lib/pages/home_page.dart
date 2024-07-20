@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:habit_tracker/components/drawer.dart';
 import 'package:habit_tracker/components/habit_list.dart';
+import 'package:habit_tracker/components/heat_map.dart';
 import 'package:habit_tracker/database/habit_database.dart';
+import 'package:habit_tracker/themes/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
@@ -84,9 +85,20 @@ class _HomePageState extends State<HomePage> {
         appBar: AppBar(
           elevation: 0,
           backgroundColor: Colors.transparent,
+          actions: [
+            IconButton(
+                onPressed: () {
+                  Provider.of<ThemeProvider>(context, listen: false)
+                      .toggleTheme();
+                },
+                icon: Icon(
+                  Provider.of<ThemeProvider>(context).isDarkMode
+                      ? Icons.sunny
+                      : Icons.nightlight,
+                ))
+          ],
           //foregroundColor: Theme.of(context).colorScheme.inversePrimary,
         ),
-        drawer: const HabitDrawer(),
         floatingActionButton: FloatingActionButton(
           onPressed: () => createHabitDialog(),
           backgroundColor: Theme.of(context).colorScheme.tertiary,
@@ -95,18 +107,16 @@ class _HomePageState extends State<HomePage> {
             color: Theme.of(context).colorScheme.inversePrimary,
           ),
         ),
-        body: Column(
-          children: [
-            Text(
-              "To Edit or Delete Habit, Slide the Habit Tile to The Left.",
-              style: TextStyle(
-                  color: Theme.of(context).colorScheme.inversePrimary,
-                  fontWeight: FontWeight.bold),
-            ),
-            const Expanded(
-              child: HabitList(),
-            )
-          ],
-        ));
+        body: Column(children: [
+          const HeatMap(),
+          Text(
+            "To edit or Delete a Habit, Swipe it Left",
+            style: TextStyle(
+                color: Colors.grey.shade400, fontWeight: FontWeight.bold),
+          ),
+          const Expanded(
+            child: HabitList(),
+          )
+        ]));
   }
 }
