@@ -30,6 +30,43 @@ class _HabitListState extends State<HabitList> {
       }
     }
 
+    //editing the habit.
+    editHabit(Habit habit) {
+      TextEditingController _controller =
+          TextEditingController(text: habit.name);
+      showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+                title: const Text("Edit This Habit"),
+                content: TextField(
+                  controller: _controller,
+                ),
+                actions: [
+                  MaterialButton(
+                    onPressed: () {
+                      //pop the dialog.
+                      Navigator.pop(context);
+                      //clear the text field.
+                      _controller.clear();
+                    },
+                    child: const Text("Cancel"),
+                  ),
+                  MaterialButton(
+                    onPressed: () {
+                      context
+                          .read<HabitDatabase>()
+                          .updateHabitName(habit.id, _controller.text);
+                      //pop the dialog.
+                      Navigator.pop(context);
+                      //clear the text field.
+                      _controller.clear();
+                    },
+                    child: const Text("Save"),
+                  ),
+                ],
+              ));
+    }
+
     return ListView.builder(
       itemCount: currenthabits.length,
       itemBuilder: (context, index) {
@@ -44,6 +81,7 @@ class _HabitListState extends State<HabitList> {
           isCompleted: isCompletedToday,
           text: habit.name,
           onChanged: (value) => checkHabitOnAndOff(value, habit),
+          editHabit: () => editHabit(habit),
         );
       },
     );
