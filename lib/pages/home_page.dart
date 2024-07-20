@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:habit_tracker/components/drawer.dart';
+import 'package:habit_tracker/components/habit_list.dart';
 import 'package:habit_tracker/database/habit_database.dart';
 import 'package:provider/provider.dart';
 
@@ -11,6 +12,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  //The first time a user opens the app,
+  @override
+  void initState() {
+    Provider.of<HabitDatabase>(context, listen: false).readHabits();
+
+    super.initState();
+  }
+
   //creating a textfield controller
   final TextEditingController _controller = TextEditingController();
 
@@ -34,7 +43,11 @@ class _HomePageState extends State<HomePage> {
               actions: [
                 MaterialButton(
                   onPressed: () {
+                    //pop the dialog
                     Navigator.pop(context);
+
+                    //clear the textfield
+                    _controller.clear();
                   },
                   child: Text(
                     "Cancel",
@@ -67,19 +80,21 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          backgroundColor: Colors.transparent,
-          foregroundColor: Theme.of(context).colorScheme.inversePrimary,
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        //foregroundColor: Theme.of(context).colorScheme.inversePrimary,
+      ),
+      drawer: const HabitDrawer(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => createHabitDialog(),
+        backgroundColor: Theme.of(context).colorScheme.tertiary,
+        child: Icon(
+          Icons.add,
+          color: Theme.of(context).colorScheme.inversePrimary,
         ),
-        drawer: const HabitDrawer(),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () => createHabitDialog(),
-          backgroundColor: Theme.of(context).colorScheme.tertiary,
-          child: Icon(
-            Icons.add,
-            color: Theme.of(context).colorScheme.inversePrimary,
-          ),
-        ));
+      ),
+      body: HabitList(),
+    );
   }
 }
